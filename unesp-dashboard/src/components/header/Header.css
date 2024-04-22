@@ -1,0 +1,28 @@
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.header-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: larger;
+    padding: 2% 4%;
+    color: #707FDD;
+    width: 25%;
+    background: #F1F2F7;
+}
+
+.header-account {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: larger;
+    padding: 2% 4%;
+    width: 25%;
+}
