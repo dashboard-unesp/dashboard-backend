@@ -3,11 +3,12 @@ import './Header.css';
 
 
 function Header() {
+
     return(
         <header className='header-container'>
             <div className='header-card'>
                 <Avatar size='lg' name='G' bg={'#707FDD'} />
-                <p>Univesp Dashboard</p>
+                <p>Unesp Dashboard</p>
             </div>
 
             <div className='header-account'>
