@@ -7,7 +7,7 @@ function Header() {
     return(
         <header className='header-container'>
             <div className='header-card'>
-                <Avatar size='lg' name='G' bg={'#707FDD'} />
+                <Avatar size='md' name='G' bg={'#707FDD'} />
                 <p>Unesp Dashboard</p>
             </div>
 

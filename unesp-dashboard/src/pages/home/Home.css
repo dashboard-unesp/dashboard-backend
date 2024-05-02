@@ -1,0 +1,29 @@
+.dashboard-container {
+    padding: 4% 2%;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+    width: 100%;
+}
+
+.table-container{
+    padding: 2% 0;
+}
+
+.chart-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.bar-chart-container {
+    width: 60%;
+}
+
+.donut-chart-container {
+    width: 40%;
+}

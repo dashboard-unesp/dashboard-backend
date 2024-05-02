@@ -13,7 +13,7 @@
     font-size: larger;
     padding: 2% 4%;
     color: #707FDD;
-    width: 25%;
+    width: 20%;
     background: #F1F2F7;
 }
 
@@ -25,4 +25,8 @@
     font-size: larger;
     padding: 2% 4%;
     width: 25%;
+}
+
+.header-card > p{
+    font-size: large;
 }
