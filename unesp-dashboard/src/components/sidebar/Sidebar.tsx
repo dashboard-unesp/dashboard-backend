@@ -4,8 +4,8 @@ import './Sidebar.css';
 function Sidebar(){
     
     return(
-        <nav className='sidebar-container'>
-            <div className='sidebar-menu'>
+        <nav className='flex flex-col p-4'>
+            <div className='p-8'>
                 <h3>Menu</h3>
                 <ul>
                     <li>
@@ -20,7 +20,7 @@ function Sidebar(){
                 <ul>
                     <li>
                         <Button width={'100%'} paddingY={'8%'} color={'#707FDD'} fontSize={'20px'} fontWeight={600}>
-                            Configuração
+                           Configuração
                         </Button>
                     </li>
                     <li>

@@ -1,5 +1,6 @@
 .dashboard-container {
     padding: 4% 2%;
+    background-color: #FFF;
 }
 
 .dashboard-header {
@@ -27,3 +28,4 @@
 .donut-chart-container {
     width: 40%;
 }
+

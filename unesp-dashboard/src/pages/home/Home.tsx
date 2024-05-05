@@ -3,6 +3,8 @@ import './Home.css';
 import { SearchOptions } from '@/components/dashboard-search-options/DashboardSearchOptions';
 import { Input } from '@/components/ui/input';
 import { DashboardTable } from '@/components/dashboard-table/DashboardTable';
+import { BarChartComponent } from '@/components/charts/dashboard-bar-chart/BarChart';
+import { DonutChartComponent } from '@/components/charts/dashboard-donut-chart/DonutChart';
 
 function Home(){
     return (
@@ -17,10 +19,10 @@ function Home(){
             </main>
             <section className='chart-container'>
                 <div className='bar-chart-container'>
-                    <SearchOptions />
+                    <BarChartComponent />
                 </div>
                 <div className='donut-chart-container'>
-                    <SearchOptions />
+                    <DonutChartComponent />
                 </div>
             </section>
         </div>
