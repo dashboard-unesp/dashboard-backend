@@ -11,7 +11,6 @@ const data = [
     {name: 'Page A', uv: 300, pv: 200},
     {name: 'Page A', uv: 300, pv: 200},
     {name: 'Page A', uv: 300, pv: 200},
-
 ];
 
 export function BarChartComponent() {
@@ -24,4 +23,3 @@ export function BarChartComponent() {
         </BarChart>
     )
 };
-

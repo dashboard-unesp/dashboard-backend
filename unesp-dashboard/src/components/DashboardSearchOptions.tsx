@@ -8,7 +8,7 @@ export function SearchOptions(){
     return(
         <Popover>
             <PopoverTrigger> Options</PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent> 
                 Place content for the popover here.
             </PopoverContent>
         </Popover>

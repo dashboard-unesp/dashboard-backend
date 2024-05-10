@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-
+import { Divider } from '@chakra-ui/react'
 
 const items = [
     1,2,3,4,5,6,7,8,9,10

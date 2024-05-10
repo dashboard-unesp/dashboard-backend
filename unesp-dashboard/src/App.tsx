@@ -1,9 +1,8 @@
-import './App.css';
-import './globals.css';
 import { Grid, GridItem } from '@chakra-ui/react'
-import Header from './components/header/Header';
-import Sidebar from './components/sidebar/Sidebar';
-import Home from './pages/home/Home';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import Home from './pages/Home';
+import './globals.css';
 
 function App() {
   
@@ -19,13 +18,12 @@ function App() {
 
       <GridItem area={'nav'} bgColor={'#F1F2F7'} borderTop={'1px'} borderColor={'#C8CBD9'} >
         <Sidebar/>
-        
       </GridItem>
 
       <GridItem area={'main'} borderTop={'1px'} borderColor={'#C8CBD9'} >
         <Home /> 
       </GridItem>
-        
+      
     </Grid>
     
   )
