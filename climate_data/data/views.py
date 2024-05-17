@@ -18,7 +18,7 @@ def sync_production_documents(self):
 
     backup = files_to_read + "\BACKUP"
 
-    climate_data_list = {}
+    climate_data_list = []
 
     files = fnmatch.filter(os.listdir(files_to_read), "*.dat")
 
