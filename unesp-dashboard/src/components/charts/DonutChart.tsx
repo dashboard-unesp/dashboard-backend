@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { PieChart, Pie } from 'recharts';
+import { PieChart, Pie, Legend, Tooltip } from 'recharts';
 
 const data = [
-  { name: 'Group A', value: 400 },
-  { name: 'Group B', value: 300 },
-  { name: 'Group C', value: 300 },
-  { name: 'Group D', value: 200 },
+  { name: 'Group A', value: 800, fill: '#8884d8' },
+  { name: 'Group B', value: 300, fill: '#000'},
+  { name: 'Group C', value: 300, fill: 'red' },
+  { name: 'Group D', value: 200, fill: 'blue' },
 ];
 
 // const calcDonut = (props: { cx: any; cy: any; midAngle: any; innerRadius: any; outerRadius: any; startAngle: any; endAngle: any; fill: any; payload: any; percent: any; value: any; }) => {
@@ -71,14 +71,12 @@ export function DonutChartComponent(){
                 cx="50%" cy="50%"
                 innerRadius={60}
                 outerRadius={80}
-                fill="#8884d8"
                 dataKey="value"
               />
+              <Tooltip />
+              <Legend />
             </PieChart>
         </div>
-        <footer className='h-fit'>
-          <p>test</p>
-        </footer>
       </div>
     );
 };
