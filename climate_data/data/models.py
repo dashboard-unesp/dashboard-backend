@@ -1,8 +1,9 @@
 from django.db import models
-
+from uuid import uuid4
 # Create your models here.
 
 class BaseData (models.Model):
+    id_base_data = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     code = models.CharField(
         max_length= 20,
         null = True,
@@ -26,6 +27,8 @@ class BaseData (models.Model):
         return self.value    
     
 class ClimateData (models.Model):
+    id_climate_data = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+
     TIMESTAMP = models.DateTimeField(
         null = True,
         blank = True,
@@ -47,14 +50,7 @@ class ClimateData (models.Model):
         help_text = "Texto explicativo do campo",
         verbose_name = "VelVent ms",
     )
-    VelVent_UOM = models.ForeignKey(
-        BaseData,
-        on_delete=models.CASCADE,
-        null = True,
-        blank = True,
-        default= None,
-        related_name = "VelVent_UOM",
-    )
+
     DirVent = models.DecimalField(
         max_digits = 12,
         decimal_places = 5,
@@ -63,14 +59,7 @@ class ClimateData (models.Model):
         help_text = "Texto explicativo do campo",
         verbose_name = "DirVent",
     )
-    DirVent_UOM = models.ForeignKey(
-        BaseData,
-        on_delete=models.CASCADE,
-        null = True,
-        blank = True,
-        default= None,
-        related_name = "DirVent_UOM",
-    )
+
     RadW = models.DecimalField(
         max_digits = 12,
         decimal_places = 5,
@@ -79,14 +68,7 @@ class ClimateData (models.Model):
         help_text = "Texto explicativo do campo",
         verbose_name = "RadW",
     )
-    RadW_UOM = models.ForeignKey(
-        BaseData,
-        on_delete=models.CASCADE,
-        null = True,
-        blank = True,
-        default= None,
-        related_name = "RadW_UOM",
-    )
+
     RadFlukJ = models.DecimalField(
         max_digits = 12,
         decimal_places = 5,
@@ -95,14 +77,7 @@ class ClimateData (models.Model):
         help_text = "Texto explicativo do campo",
         verbose_name = "RadFlukJTot",
     )
-    RadFlukJ_UOM = models.ForeignKey(
-        BaseData,
-        on_delete=models.CASCADE,
-        null = True,
-        blank = True,
-        default= None,
-        related_name = "RadFlukJ_UOM",
-    )
+
     Temp = models.DecimalField(
         max_digits = 12,
         decimal_places = 5,
@@ -111,14 +86,7 @@ class ClimateData (models.Model):
         help_text = "Texto explicativo do campo",
         verbose_name = "Temp",
     )
-    Temp_UOM = models.ForeignKey(
-        BaseData,
-        on_delete=models.CASCADE,
-        null = True,
-        blank = True,
-        default= None,
-        related_name = "Temp_UOM",
-    )
+
     UR = models.DecimalField(
         max_digits = 12,
         decimal_places = 5,
@@ -127,14 +95,7 @@ class ClimateData (models.Model):
         help_text = "Texto explicativo do campo",
         verbose_name = "UR",
     )
-    UR_UOM = models.ForeignKey(
-        BaseData,
-        on_delete=models.CASCADE,
-        null = True,
-        blank = True,
-        default= None,
-        related_name = "UR_UOM",
-    )
+
     Press = models.DecimalField(
         max_digits = 12,
         decimal_places = 5,
@@ -143,14 +104,7 @@ class ClimateData (models.Model):
         help_text = "Texto explicativo do campo",
         verbose_name = "Press_mbar",
     )
-    Press_UOM = models.ForeignKey(
-        BaseData,
-        on_delete=models.CASCADE,
-        null = True,
-        blank = True,
-        default= None,
-        related_name = "Press_UOM",
-    )
+
     Chuva = models.DecimalField(
         max_digits = 12,
         decimal_places = 5,
@@ -159,14 +113,7 @@ class ClimateData (models.Model):
         help_text = "Texto explicativo do campo",
         verbose_name = "Chuva_mm_Tot",
     )
-    Chuva_UOM = models.ForeignKey(
-        BaseData,
-        on_delete=models.CASCADE,
-        null = True,
-        blank = True,
-        default= None,
-        related_name = "Chuva_UOM",
-    )
+
 
     def __str__(self):
         return self.RECORD

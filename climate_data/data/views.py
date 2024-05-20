@@ -5,13 +5,18 @@ from datetime import datetime
 
 from django.conf import settings
 from django.db import transaction
+from django.db.models import Sum, Max, Avg, Min
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from rest_framework.decorators import api_view
 
+from .api.serializers import ClimateDataSerializer
 from ..data.models import *
-
+from rest_framework.response import Response
+from rest_framework import  status
+from climate_data.data import models
 
 @csrf_exempt
 @require_http_methods(['GET'])
@@ -62,21 +67,14 @@ def sync_files(self):
                 )
                 climate_data_list.append(climate_data)
 
-            check_id = ClimateData.objects.get(RECORD=register_id)
 
-            if check_id:
+            with transaction.atomic():
+                ClimateData.objects.bulk_create(climate_data_list)
 
-                error_files.append(file)              
+            shutil.move(os.path.join(files_to_read, file),
+                os.path.join(backup, file))
 
-            else:
-
-                with transaction.atomic():      
-                    ClimateData.objects.bulk_create(climate_data_list)
-
-                shutil.move(os.path.join(files_to_read, file),
-                    os.path.join(backup, file))
-                
-                climate_data_list.clear()
+            climate_data_list.clear()
 
     for files_to_move in error_files:
 
@@ -84,3 +82,26 @@ def sync_files(self):
             os.path.join(error, files_to_move))  
 
     return JsonResponse({"message": "Production Orders Created"},safe=False)
+
+@api_view(['GET'])
+def index(request, start_date, end_date):
+    objeto = {}
+    media_dir_vent = models.ClimateData.objects.filter(TIMESTAMP__gte=start_date, TIMESTAMP__lte=end_date).aggregate(media_dir_vent=Avg('DirVent'))
+    vel_max_vent = models.ClimateData.objects.filter(TIMESTAMP__gte=start_date, TIMESTAMP__lte=end_date).aggregate(vel_max_vent=Max('VelVent'))
+    somatoria_chuva = models.ClimateData.objects.filter(TIMESTAMP__gte=start_date, TIMESTAMP__lte=end_date).aggregate(somatoria_chuva=Sum('Chuva'))
+    temp_max = models.ClimateData.objects.filter(TIMESTAMP__gte=start_date, TIMESTAMP__lte=end_date).aggregate(temp_max=Max('Temp'))
+    temp_min = models.ClimateData.objects.filter(TIMESTAMP__gte=start_date, TIMESTAMP__lte=end_date).aggregate(temp_min=Min('Temp'))
+    objeto['mediaDirecaoVento'] = media_dir_vent['media_dir_vent']
+    objeto['velocidadeMaximaVento'] = vel_max_vent['vel_max_vent']
+    objeto['somatoriaChuva'] = somatoria_chuva['somatoria_chuva']
+    objeto['temperaturaMaxima'] = temp_max['temp_max']
+    objeto['temp_min'] = temp_min['temp_min']
+    #serialized_rows = ClimateDataSerializer(dataRows, many=True)
+    return Response(objeto, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def list_view(request, start_date, end_date):
+    objeto = {}
+    dataRows = models.ClimateData.objects.all()
+    serialized_rows = ClimateDataSerializer(dataRows, many=True)
+    return Response(serialized_rows.data, status=status.HTTP_200_OK)
