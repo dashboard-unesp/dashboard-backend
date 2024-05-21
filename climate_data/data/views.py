@@ -62,25 +62,32 @@ def sync_files(self):
                 )
                 climate_data_list.append(climate_data)
 
+        try:
+
             check_id = ClimateData.objects.get(RECORD=register_id)
 
-            if check_id:
+            error_files.append(file)           
 
-                error_files.append(file)              
-
-            else:
-
-                with transaction.atomic():      
-                    ClimateData.objects.bulk_create(climate_data_list)
-
-                shutil.move(os.path.join(files_to_read, file),
-                    os.path.join(backup, file))
+        except:
+            with transaction.atomic():
+                ClimateData.objects.bulk_create(climate_data_list)
                 
                 climate_data_list.clear()
 
-    for files_to_move in error_files:
+    if len(error_files) > 0:
 
-        shutil.move(os.path.join(files_to_read, files_to_move),
-            os.path.join(error, files_to_move))  
+        for files_to_move in error_files:
+
+            shutil.move(os.path.join(files_to_read, files_to_move),
+                os.path.join(error, files_to_move))
+        
+    new_files = [file for file in files if file not in error_files]
+
+    if len(new_files) > 0:
+
+        for file in files:
+            
+            shutil.move(os.path.join(files_to_read, file),
+                os.path.join(backup, file))
 
     return JsonResponse({"message": "Production Orders Created"},safe=False)
