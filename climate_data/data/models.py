@@ -168,5 +168,5 @@ class ClimateData (models.Model):
         related_name = "Chuva_UOM",
     )
 
-    def __str__(self):
-        return self.RECORD
+    # def __str__(self):
+    #     return self.RECORD
