@@ -115,5 +115,5 @@ class ClimateData (models.Model):
     )
 
 
-    # def __str__(self):
-    #     return self.RECORD
+    def __str__(self):
+        return self.RECORD

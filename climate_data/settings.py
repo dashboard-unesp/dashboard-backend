@@ -86,7 +86,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "pi_univesp",
         "USER": "root",
-        "PASSWORD": "",
+        "PASSWORD": "142536",
         "HOST": "127.0.0.1",
         "PORT": "3306",
     }
