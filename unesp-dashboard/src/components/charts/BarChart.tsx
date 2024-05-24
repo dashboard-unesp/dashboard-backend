@@ -1,9 +1,11 @@
+import { format, formatDate, subDays } from 'date-fns';
+import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-const data = [
+
+const data1 = [
     {name: 'Page A', minTemp: 300.50, maxTemp: 200},
     {name: 'Page A', minTemp: 400, maxTemp: 600},
     {name: 'Page A', minTemp: 400, maxTemp: 600},
-    {name: 'Page A', minTemp: 300, maxTemp: 200},
     {name: 'Page A', minTemp: 300, maxTemp: 200},
     {name: 'Page A', minTemp: 300, maxTemp: 200},
     {name: 'Page A', minTemp: 300, maxTemp: 200},
@@ -23,7 +25,55 @@ const legendStyle: React.CSSProperties = {
     justifyContent: 'center',
 }
 
+// async function fetchData() {
+//     let today = format(new Date(), 'y-MM-dd');
+//     let responses = [];
+//     for(let i = 0; i < 10; i++){
+//         let filterEnd = format(subDays(today, i), 'y-MM-dd');
+//         let filterStart = format(subDays(filterEnd, i), 'y-MM-dd');
+//         fetch(`http://localhost:8000/filter/${filterStart}/${filterEnd}`, {mode: 'no-cors'})
+//         .then(response => response.json())
+//         .then(data => responses.push(data));
+//     }
+//     return responses;
+// }
+
 export function BarChartComponent() {
+
+    const [data, setData] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+  
+    const fetchData = async (filterStart: string, filterEnd: string) => {
+        setIsLoading(true);
+        setError(null); // Clear any previous errors
+        try {
+            const fetchedData = await fetch(`http://localhost:8000/filter/2024-01-15/${filterEnd}?format=json`, {
+                method: 'GET',  // Example for a POST request
+                headers: {
+                    'Access-Control-Allow-Origin' : 'http://localhost:5173'
+                }
+            });
+            //const fetchedData = await response.json();
+            console.log(fetchedData)
+            //setData([data, ...fetchedData]);
+        } catch (error: any) {
+            console.log(error)
+            setError(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+  
+    useEffect(() => {
+        let today = format(new Date(), 'y-MM-dd');
+        for(let i = 0; i < 10; i++){
+            let filterEnd = format(subDays(today, i), 'y-MM-dd');
+            let filterStart = format(subDays(today, i +1 ), 'y-MM-dd');
+            fetchData(filterStart, filterEnd);
+        }
+    }, []);
+
     return (
         <BarChart width={800} height={300} data={data}>
           <XAxis dataKey="name" />
@@ -38,3 +88,4 @@ export function BarChartComponent() {
         </BarChart>
     )
 };
+

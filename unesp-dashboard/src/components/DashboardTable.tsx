@@ -7,13 +7,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Divider } from '@chakra-ui/react'
 
 const items = [
     1,2,3,4,5,6,7,8,9,10
 ];
 
 export function DashboardTable() {
+
 
     return(
         <Table>
@@ -30,7 +30,7 @@ export function DashboardTable() {
                 {
                 items.map((row) => {
                         return (
-                            <TableRow>
+                            <TableRow key={row}>
                                 <TableCell className="font-medium">INV001</TableCell>
                                 <TableCell>Paid</TableCell>
                                 <TableCell>Credit Card</TableCell>
