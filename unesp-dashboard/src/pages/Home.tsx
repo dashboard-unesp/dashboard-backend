@@ -7,8 +7,8 @@ import { DonutChartComponent } from '@/components/charts/DonutChart';
 
 function Home(){
     return (
-        <section className='px-[4%] py-[2%] bg-white'>
-            <nav className='flex justify-end gap-[10px] w-full'>
+        <section className='px-8 py-[2%] bg-white w-full'>
+            <nav className='flex justify-end gap-[10px] w-full pb-4'>
                 <SearchOptions />
                 <Input />
                 <DatePickerWithRange />
@@ -16,11 +16,11 @@ function Home(){
             <main className='px-[2%] pb-[5%]'>
                 <DashboardTable />
             </main>
-            <section className='flex flex-row justify-between gap-[6%] w-full items-center p-4'>
-                <div className='w-[60%]'>
+            <section className='flex flex-row items-center p-4 justify-between'>
+                <div className='max-w-[60%]'>
                     <BarChartComponent />
                 </div>
-                <div className='w-[40%]'>
+                <div className='max-w-[40%]'>
                     <DonutChartComponent />
                 </div>
             </section>

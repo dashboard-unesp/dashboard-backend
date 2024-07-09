@@ -4,8 +4,8 @@ import { PieChart, Pie, Legend, Tooltip } from 'recharts';
 const data = [
   { name: 'Group A', value: 800, fill: '#8884d8' },
   { name: 'Group B', value: 300, fill: '#000'},
-  { name: 'Group C', value: 300, fill: 'red' },
-  { name: 'Group D', value: 200, fill: 'blue' },
+  { name: 'Group C', value: 300, fill: '#D3D1F2' },
+  { name: 'Group D', value: 200, fill: '#7E7CEC ' },
 ];
 
 export function DonutChartComponent(){

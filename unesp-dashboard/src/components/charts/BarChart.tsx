@@ -22,21 +22,7 @@ const legendStyle: React.CSSProperties = {
     borderRadius: 3, 
     lineHeight: '40px',
     gap: '10px',
-    justifyContent: 'center',
 }
-
-// async function fetchData() {
-//     let today = format(new Date(), 'y-MM-dd');
-//     let responses = [];
-//     for(let i = 0; i < 10; i++){
-//         let filterEnd = format(subDays(today, i), 'y-MM-dd');
-//         let filterStart = format(subDays(filterEnd, i), 'y-MM-dd');
-//         fetch(`http://localhost:8000/filter/${filterStart}/${filterEnd}`, {mode: 'no-cors'})
-//         .then(response => response.json())
-//         .then(data => responses.push(data));
-//     }
-//     return responses;
-// }
 
 export function BarChartComponent() {
 
@@ -48,15 +34,16 @@ export function BarChartComponent() {
         setIsLoading(true);
         setError(null); // Clear any previous errors
         try {
-            const fetchedData = await fetch(`http://localhost:8000/filter/2024-01-15/${filterEnd}?format=json`, {
+            const { temperaturaMaxima, temp_min } = await fetch(`http://localhost:8000/filter/${filterStart}/${filterEnd}`, {
                 method: 'GET',  // Example for a POST request
-                headers: {
-                    'Access-Control-Allow-Origin' : 'http://localhost:5173'
-                }
-            });
-            //const fetchedData = await response.json();
-            console.log(fetchedData)
-            //setData([data, ...fetchedData]);
+                
+            }).then(response => response.json());
+
+            setData([{
+                minTemp: temp_min ? temp_min : 10, 
+                maxTemp: temperaturaMaxima ? temperaturaMaxima : 30
+            }, ...data]);
+            console.log(data)
         } catch (error: any) {
             console.log(error)
             setError(error.message);
@@ -75,14 +62,14 @@ export function BarChartComponent() {
     }, []);
 
     return (
-        <BarChart width={800} height={300} data={data}>
+        <BarChart width={800} height={300} data={data1}>
           <XAxis dataKey="name" />
           <YAxis  />
           <Tooltip />
           <Legend wrapperStyle={legendStyle} payload={[
                 { value: 'Temperatura minima', type: 'square', id: 'ID01', color:'#8884d8' },
                 { value: 'Temperatura maxima', type: 'square', id: 'ID02', color:'#000' }
-            ]}/>
+            ]} />
           <Bar dataKey="minTemp" barSize={10} fill="#8884d8"/>
           <Bar dataKey="maxTemp" barSize={10} fill="#000"/>
         </BarChart>

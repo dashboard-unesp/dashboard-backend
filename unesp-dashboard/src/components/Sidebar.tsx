@@ -1,29 +1,41 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button } from '@chakra-ui/react';
-
-<Accordion>
-  <AccordionItem>
-    <h2>
-      <AccordionButton _expanded={{ bg: 'tomato', color: 'white' }}>
-        <Box as='span' flex='1' textAlign='left'>
-          Click me to see a different style
-        </Box>
-        <AccordionIcon />
-      </AccordionButton>
-    </h2>
-    <AccordionPanel>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat.
-    </AccordionPanel>
-  </AccordionItem>
-</Accordion>
+import { Button } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
 function Sidebar(){
-    
+    const [isCollapsed, setIsCollapsed] = useState(false);
+
+    useEffect(() => {
+        const sidebar = document.getElementById('sidebarContent');
+
+        if(!isCollapsed){
+            sidebar?.classList.add('w-[300px]');
+        }else{
+            sidebar?.classList.remove('w-[300px]');
+        }
+
+    }, [isCollapsed])
+
     return(
-        <nav className='flex flex-col p-4'>
-           <Button />
+        <nav className='max-w-fit'>
+            <div id='sidebarContent' className='flex flex-col justify-between h-full'>
+
+                <ul className='flex flex-col p-4 gap-4'>
+                    <Button onClick={() => setIsCollapsed(!isCollapsed)}/>
+                    <Button />
+                    <Button />
+                    <Button />
+                    <Button />
+                    <Button />
+                    <Button />
+                </ul>
+
+                <ul className='flex flex-col p-4 gap-4'>
+                    <Button />
+                    <Button />
+                    <Button />
+                </ul>
+            </div>
+
         </nav>
     );
 }
