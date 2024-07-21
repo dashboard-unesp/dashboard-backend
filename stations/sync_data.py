@@ -21,7 +21,7 @@ from rest_framework import  status
 @require_http_methods(['GET'])
 def sync_files(self):
 
-    files_to_read = os.path.abspath(os.path.join(settings.BASE_DIR, '..' + "/PI_files/"))
+    files_to_read = os.path.abspath(os.path.join(settings.BASE_DIR, '..' + "/pi_univesp_backend/PI_files/"))
 
     backup = files_to_read + "\BACKUP"
 
