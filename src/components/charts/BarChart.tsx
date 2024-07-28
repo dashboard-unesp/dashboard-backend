@@ -1,19 +1,28 @@
+import { filter } from '@chakra-ui/react';
 import { format, formatDate, subDays } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
-const data1 = [
-    {name: 'Page A', minTemp: 300.50, maxTemp: 200},
-    {name: 'Page A', minTemp: 400, maxTemp: 600},
-    {name: 'Page A', minTemp: 400, maxTemp: 600},
-    {name: 'Page A', minTemp: 300, maxTemp: 200},
-    {name: 'Page A', minTemp: 300, maxTemp: 200},
-    {name: 'Page A', minTemp: 300, maxTemp: 200},
-    {name: 'Page A', minTemp: 300, maxTemp: 200},
-    {name: 'Page A', minTemp: 300, maxTemp: 200},
-    {name: 'Page A', minTemp: 300, maxTemp: 200},
-    {name: 'Page A', minTemp: 300, maxTemp: 200},
-];
+type BarChartData = {
+    datetime: string;
+    minTemp: number;
+    maxTemp: number;
+}
+
+const { VITE_API_URL } = import.meta.env
+
+// const data1 = [
+//     {name: 'Page A', minTemp: 300.50, maxTemp: 200},
+//     {name: 'Page A', minTemp: 400, maxTemp: 600},
+//     {name: 'Page A', minTemp: 400, maxTemp: 600},
+//     {name: 'Page A', minTemp: 300, maxTemp: 200},
+//     {name: 'Page A', minTemp: 300, maxTemp: 200},
+//     {name: 'Page A', minTemp: 300, maxTemp: 200},
+//     {name: 'Page A', minTemp: 300, maxTemp: 200},
+//     {name: 'Page A', minTemp: 300, maxTemp: 200},
+//     {name: 'Page A', minTemp: 300, maxTemp: 200},
+//     {name: 'Page A', minTemp: 300, maxTemp: 200},
+// ];
 
 const legendStyle: React.CSSProperties = { 
     bottom: 0, 
@@ -32,18 +41,27 @@ export function BarChartComponent() {
   
     const fetchData = async (filterStart: string, filterEnd: string) => {
         setIsLoading(true);
-        setError(null); // Clear any previous errors
+        setError(null); 
         try {
-            const { temperaturaMaxima, temp_min } = await fetch(`http://localhost:8000/filter/${filterStart}/${filterEnd}`, {
-                method: 'GET',  // Example for a POST request
-                
+            const params = (filterStart && filterEnd) 
+            ? `?date_from=${filterStart}&date_to=${filterEnd}&format=json`
+            : `?date_from=2024-03-01&date_to=2024-03-28&format=json`;
+            
+            console.log(params)
+            
+            const response = await fetch(`${VITE_API_URL}/climate/barchart/${params}`, {
+                method: 'GET',  
             }).then(response => response.json());
 
-            setData([{
-                minTemp: temp_min ? temp_min : 10, 
-                maxTemp: temperaturaMaxima ? temperaturaMaxima : 30
-            }, ...data]);
-            console.log(data)
+            const data = response.map(({datetime, minTemp, maxTemp}:BarChartData) => {
+                return {
+                    name: format(datetime, 'd-M'),
+                    minTemp: minTemp.toFixed(0),
+                    maxTemp: maxTemp.toFixed(0)
+                }
+            })
+            setData(data)
+            
         } catch (error: any) {
             console.log(error)
             setError(error.message);
@@ -54,15 +72,13 @@ export function BarChartComponent() {
   
     useEffect(() => {
         let today = format(new Date(), 'y-MM-dd');
-        for(let i = 0; i < 10; i++){
-            let filterEnd = format(subDays(today, i), 'y-MM-dd');
-            let filterStart = format(subDays(today, i +1 ), 'y-MM-dd');
-            fetchData(filterStart, filterEnd);
-        }
+        // let filterEnd = format(subDays(today, i), 'y-MM-dd');
+        // let filterStart = format(subDays(today, i +1 ), 'y-MM-dd');
+        fetchData('','');
     }, []);
 
     return (
-        <BarChart width={800} height={300} data={data1}>
+        <BarChart width={800} height={300} data={data}>
           <XAxis dataKey="name" />
           <YAxis  />
           <Tooltip />
