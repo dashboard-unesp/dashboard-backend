@@ -1,12 +1,30 @@
 import { Button } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { MdBuild, MdAccountCircle, MdHelp   } from "react-icons/md";
+import { MdBuild, MdAccountCircle, MdHelp, MdArticle, MdBackup, MdCable } from "react-icons/md";
 
 type SidebuttonProps = {
     title: string;
     icon: JSX.Element;
     label: string;
 }
+
+const mainMenu: SidebuttonProps[] = [
+    {
+        title:'report',
+        icon: <MdArticle size={18}/>,
+        label: 'Relatórios'
+    },
+    {
+        title:'downloads',
+        icon: <MdBackup  size={18}/>,
+        label: 'Downloads'
+    },
+    {
+        title:'integrations',
+        icon: <MdCable  size={18}/>,
+        label: 'Integrações'
+    },
+]
 
 const subMenu: SidebuttonProps[] = [
     {
@@ -46,19 +64,29 @@ function Sidebar(){
             <div id='sidebarContent' className='flex flex-col justify-between h-full ease-in-out duration-300 stretch-button'>
 
                 <ul className='flex flex-col p-4 gap-4'>
-                    <Button onClick={() => setIsCollapsed(!isCollapsed)}/>
-                    <Button></Button>
-                    <Button></Button>
-                    <Button></Button>
-                    <Button></Button>
-                    <Button></Button>
-                    <Button></Button>
+                    <Button onClick={() => setIsCollapsed(!isCollapsed)}>
+                        {   
+                            isCollapsed ? '>': '<<<'
+                        }
+                    </Button>
+                    {
+                        mainMenu.map((button) => (
+                            <Button key={button.title} onClick={() => alert('ops! em desenvolvimento :)')}>
+                                {
+                                    isCollapsed 
+                                        ? button.icon 
+                                        : <>{button.icon}<span className='pl-1'>{button.label}</span></>
+                                }
+                            </Button>
+                        ))
+                    }
+                    
                 </ul>
 
                 <ul className='flex flex-col p-4 gap-4'>
                     {
                         subMenu.map((button) => (
-                            <Button>
+                            <Button key={button.title} onClick={() => alert('ops! em desenvolvimento :)')} >
                                 {
                                     isCollapsed 
                                         ? button.icon 

@@ -58,10 +58,10 @@ export function DashboardTable() {
             <Modal onClose={onClose} isOpen={isOpen} isCentered>
                 <ModalOverlay />
                 <ModalContent>
-                <ModalHeader>Modal Title</ModalHeader>
+                <ModalHeader>Feature em desenvolvimento</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    something
+                    {'Oops! Em desenvolvimento :)'}
                 </ModalBody>
                 <ModalFooter>
                     <Button onClick={onClose}>Close</Button>

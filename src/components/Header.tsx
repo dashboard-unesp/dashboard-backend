@@ -9,7 +9,7 @@ function Header() {
                 <p>Unesp Dashboard</p>
             </div>
 
-            <div className='flex items-center gap-[8px] font-bold px-[2%] py-[4%] w-[25%]'>
+            <div className='flex items-center gap-[8px] font-bold px-[2%] py-[4%] w-[25%] cursor-pointer' onClick={() => alert('ops! em desenvolvimento :)')}>
                 <Avatar size='md' name='Anonimo' bg={'#C8CBD9'} />
                 <p className='text-xl'>Conta Anonima</p>
             </div>
