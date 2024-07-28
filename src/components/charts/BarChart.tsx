@@ -1,5 +1,4 @@
-import { filter } from '@chakra-ui/react';
-import { format, formatDate, subDays } from 'date-fns';
+import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
@@ -36,12 +35,9 @@ const legendStyle: React.CSSProperties = {
 export function BarChartComponent() {
 
     const [data, setData] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
   
     const fetchData = async (filterStart: string, filterEnd: string) => {
-        setIsLoading(true);
-        setError(null); 
+        
         try {
             const params = (filterStart && filterEnd) 
             ? `?date_from=${filterStart}&date_to=${filterEnd}&format=json`
@@ -64,16 +60,11 @@ export function BarChartComponent() {
             
         } catch (error: any) {
             console.log(error)
-            setError(error.message);
-        } finally {
-            setIsLoading(false);
-        }
+        } 
     };
   
     useEffect(() => {
-        let today = format(new Date(), 'y-MM-dd');
-        // let filterEnd = format(subDays(today, i), 'y-MM-dd');
-        // let filterStart = format(subDays(today, i +1 ), 'y-MM-dd');
+        
         fetchData('','');
     }, []);
 
