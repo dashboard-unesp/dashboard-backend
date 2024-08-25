@@ -77,6 +77,3 @@ class ClimateData(models.Model):
 
     class Meta:
         pass
-
-    # def __str__(self) -> str:
-    #     return f'{self.datetime}'
