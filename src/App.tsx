@@ -1,30 +1,29 @@
-import { Grid, GridItem } from '@chakra-ui/react'
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import Home from './pages/Home';
+// import { Grid, GridItem } from '@chakra-ui/react'
+// import Header from './components/Header';
+// import Sidebar from './components/Sidebar';
+// import Home from './pages/Home';
 import './globals.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './Layout';
+import Home from './pages/Home';
+import Login from './pages/Login';
 
 function App() {
   
   return (
-    
-    <Grid templateAreas={`"header" "main"`}
-        gridTemplateRows={'10% 1fr'} h='100vh' fontWeight='bold'>
+    <Router>
+      <Routes>
+        
+        <Route path='/' element={<Login />} />
 
-      <GridItem area={'header'} >
-        <Header />
-      </GridItem>
+        <Route path="/dashboard" element={<Layout />}>
+          <Route index element={<Home />} />
+        </Route>
 
-      <GridItem area={'main'} borderTop={'1px'} borderColor={'#C8CBD9'}>
-        <section className='flex flex-row bg-[#C8CBD9]'>
-          <Sidebar />
-          <Home /> 
-        </section>
-      </GridItem>
-      
-    </Grid>
-    
-  )
+      </Routes>
+    </Router>
+  );
+  
 }
 
 export default App
