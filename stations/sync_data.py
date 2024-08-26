@@ -1,36 +1,29 @@
-import fnmatch
 import os
 import shutil
-from datetime import datetime
+import fnmatch
 
+from datetime import datetime
 from django.conf import settings
 from django.db import transaction
 from django.http import JsonResponse
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from ..data.models import *
-
+from stations.models import ClimateData
 
 @csrf_exempt
 @require_http_methods(['GET'])
 def sync_files(self):
 
-    files_to_read = os.path.abspath(os.path.join(settings.BASE_DIR, '..' + "/PI_files/"))
-
+    files_to_read = os.path.abspath(os.path.join(settings.BASE_DIR, '..' + "/pi_univesp_backend/PI_files/"))
     backup = files_to_read + "\BACKUP"
-
     error = files_to_read + "\ERROR"
 
     climate_data_list = []
-
     error_files = []
 
     files = fnmatch.filter(os.listdir(files_to_read), "*.dat")
-
     for file in files:
-
         with open(files_to_read + "/" + file, 'r', encoding='utf8') as arquivo:
             lines = arquivo.readlines()[4:]
             for line in lines:
@@ -49,44 +42,35 @@ def sync_files(self):
                 Chuva_mm_Tot = float(value[9])
                 
                 climate_data = ClimateData(
-                    TIMESTAMP=formatted_date,
-                    RECORD=register_id,
-                    VelVent=VelVent_ms,
-                    DirVent=DirVent,
+                    datetime=formatted_date,
+                    record=register_id,
+                    wind_speed=VelVent_ms,
+                    wind_direction=DirVent,
                     RadW=RadW,
                     RadFlukJ=RadFlukJ_Tot,
-                    Temp=Temp,
-                    UR=new_ur,
-                    Press=Press_mbar,
-                    Chuva=Chuva_mm_Tot,
+                    degrees=Temp,
+                    ur=new_ur,
+                    pressure=Press_mbar,
+                    rain_amount=Chuva_mm_Tot,
                 )
                 climate_data_list.append(climate_data)
-
         try:
-
             check_id = ClimateData.objects.get(RECORD=register_id)
-
             error_files.append(file)           
-
         except:
             with transaction.atomic():
                 ClimateData.objects.bulk_create(climate_data_list)
-                
                 climate_data_list.clear()
 
     if len(error_files) > 0:
-
         for files_to_move in error_files:
-
             shutil.move(os.path.join(files_to_read, files_to_move),
                 os.path.join(error, files_to_move))
         
     new_files = [file for file in files if file not in error_files]
 
     if len(new_files) > 0:
-
         for file in files:
-            
             shutil.move(os.path.join(files_to_read, file),
                 os.path.join(backup, file))
 
