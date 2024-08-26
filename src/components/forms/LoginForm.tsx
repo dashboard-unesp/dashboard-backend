@@ -36,7 +36,7 @@ function LoginForm() {
 
     return(
         <>
-            <div className="p-8">
+            <div className="flex flex-col gap-8 p-10">
                 <FormControl isInvalid={!!emailError}>
                     <FormLabel>Email</FormLabel>
                     <Input type="email" value={email} onChange={handleEmailChange} />
@@ -47,7 +47,11 @@ function LoginForm() {
                     <Input type="password" value={password} onChange={handlePasswordChange} />
                     <FormErrorMessage>{}</FormErrorMessage>
                 </FormControl>
-                <Button type="submit" className="mt-4">Login</Button>
+                <span  className="flex flex-col items-center">
+                    <Button type="submit" className="mt-4 w-full">Login</Button>
+                    <a className="text-blue-800 font-semibold text-sm hover:underline pt-4"
+                        href="http://">Esqueci a senha</a>
+                </span>
             </div>
         </>
     );

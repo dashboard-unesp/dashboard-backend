@@ -1,6 +1,7 @@
-import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
-import LoginForm from "@/components/LoginForm";
+import { Button, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
+import LoginForm from "@/components/forms/LoginForm";
 import { useState } from "react";
+import RegisterForm from "@/components/forms/RegisterForm";
 
 function Login(){
     
@@ -23,12 +24,12 @@ function Login(){
                         </p>
                         <span className="flex space-between w-full gap-2 items-center justify-center">
                             <Button className="w-fit hover:text-black" fontSize="large" fontWeight={'500'} padding={'25px'} 
-                                backgroundColor={'#8884d8'} textColor={'#FFF'} onClick={onOpen}>
+                                backgroundColor={'#8884d8'} textColor={'#FFF'} onClick={() => ( setIsLogin(true), onOpen())}>
                                 <span className="font-serif">ENTRAR</span>
                             </Button>
                             <a className="text-blue-800 font-semibold text-sm hover:underline"
-                            href="http://">
-                                Sou novo por aqui
+                            href={undefined}onClick={() => (setIsLogin(false), onOpen())}>
+                                Cadastre-se
                             </a>
                         </span>
                     </div>
@@ -45,13 +46,12 @@ function Login(){
             <Modal onClose={onClose} isOpen={isOpen} isCentered>
                     <ModalOverlay />
                     <ModalContent>
-                    <ModalHeader className="text-center">
-                        {
-                            isLogin ? 'Entrar' : 'Cadastrar'
-                        }
-                    </ModalHeader>
                     <ModalBody>
-                        <LoginForm />
+                        {
+                            isLogin 
+                                ? <LoginForm /> 
+                                : <RegisterForm />
+                        }
                     </ModalBody>
                     </ModalContent>
                 </Modal>
