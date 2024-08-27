@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'stations'
+    'stations',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,9 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_AUTHENTICATION_CLASSES': [ 
+        'rest_framework.authentication.BasicAuthentication', 
+    ] 
 }
 
 # Database
@@ -101,7 +105,7 @@ DATABASES = {
         'USER': os.environ.get('DB_USERNAME'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'PORT': int(os.environ.get('DB_PORT')) + 1,
     }
 }
 
