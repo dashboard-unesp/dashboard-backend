@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_swagger',
     'stations',
     'users'
@@ -86,8 +87,12 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_AUTHENTICATION_CLASSES': [ 
-        'rest_framework.authentication.BasicAuthentication', 
+        #'rest_framework.authentication.BasicAuthentication', 
+        'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
 
@@ -141,9 +146,9 @@ USE_I18N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
+AUTH_USER_MODEL = 'users.User' 
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / STATIC_URL
