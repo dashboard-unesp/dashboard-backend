@@ -1,12 +1,18 @@
-import { Button, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
+import { Button, Modal, ModalBody, ModalContent, ModalOverlay, useDisclosure } from "@chakra-ui/react";
 import LoginForm from "@/components/forms/LoginForm";
 import { useState } from "react";
 import RegisterForm from "@/components/forms/RegisterForm";
+import useToken from "@/hooks/useToken";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function Login(){
-    
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const [isLogin, setIsLogin] = useState(true)
+    const {token, setToken} = useToken();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [isLogin, setIsLogin] = useState(true);
+
+    if(token){
+        return <Navigate to="/dashboard" />;
+    }
 
     return (
         <>
@@ -27,10 +33,11 @@ function Login(){
                                 backgroundColor={'#8884d8'} textColor={'#FFF'} onClick={() => ( setIsLogin(true), onOpen())}>
                                 <span className="font-serif">ENTRAR</span>
                             </Button>
-                            <a className="text-blue-800 font-semibold text-sm hover:underline"
-                            href={undefined}onClick={() => (setIsLogin(false), onOpen())}>
+                            <Button className="w-fit hover:text-black hover:underline">
+                                <a href={undefined}onClick={() => (setIsLogin(false), onOpen())}>
                                 Cadastre-se
-                            </a>
+                                </a>
+                            </Button>
                         </span>
                     </div>
                 </main>
@@ -44,18 +51,13 @@ function Login(){
             </section>
 
             <Modal onClose={onClose} isOpen={isOpen} isCentered>
-                    <ModalOverlay />
-                    <ModalContent>
+                <ModalOverlay />
+                <ModalContent>
                     <ModalBody>
-                        {
-                            isLogin 
-                                ? <LoginForm /> 
-                                : <RegisterForm />
-                        }
+                        { isLogin ? <LoginForm /> : <RegisterForm /> }
                     </ModalBody>
-                    </ModalContent>
-                </Modal>
-
+                </ModalContent>
+            </Modal>
         </>
     );
 }

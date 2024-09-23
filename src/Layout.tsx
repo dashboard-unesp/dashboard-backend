@@ -2,8 +2,18 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { Grid, GridItem } from "@chakra-ui/react";
 import { Outlet } from 'react-router-dom';
+import useToken from "./hooks/useToken";
+import { Navigate } from 'react-router-dom';
 
 function Layout(){
+
+    const {token, setToken} = useToken();
+    
+    if (!token) {
+        console.log(token);
+        return <Navigate to="/" />;
+    }
+
     return (
         
         <Grid templateAreas={`"header" "main"`}

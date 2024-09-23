@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Select, SelectField } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
 import { useState } from "react";
 
 const RegisterForm = () => {
@@ -6,12 +6,11 @@ const RegisterForm = () => {
     const [gender, setGender] = useState('');
     const [birthDate, setBirthDate] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');   
+    const [password, setPassword] = useState('');
   
-  
+    // TODO: perform registration flow
     const handleSubmit = (event: React.FormEvent) => {
-      event.preventDefault();   
-  
+      event.preventDefault(); 
       // Handle form submission here, e.g., send data to server
       console.log('Form submitted:', { name, gender, birthDate, email, password });
     };
