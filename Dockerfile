@@ -21,7 +21,8 @@ RUN set -ex && \
     pip install -r /tmp/requirements.txt && \
     rm -rf /root/.cache/
 COPY . /code
+COPY entrypoint.sh /entrypoint.sh
 
 EXPOSE 8000
-
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["gunicorn", "--bind", ":8000", "--workers", "2", "setup.wsgi"]
