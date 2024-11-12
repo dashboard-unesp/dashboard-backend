@@ -32,15 +32,17 @@ class UserViewSet(ModelViewSet):
     def login(self, request):
         email = request.data['email']
         password = request.data['password']
-        try:
-            user = User.objects.filter(email=email).first()
-            if user.check_password(str(password)):
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key}, status=status.HTTP_200_OK)
-            else:
-                return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
-        except User.DoesNotExist:
-            return Response({'error': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.filter(email=email).first()
+
+        if not user:
+            return Response({'error': 'user not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if user.check_password(str(password)):
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+     
     
     @action(methods=['POST'], detail=False, url_path='register',  permission_classes=[AllowAny])
     def register(self, request, *args, **kwargs):
