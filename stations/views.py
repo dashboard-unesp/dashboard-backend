@@ -1,12 +1,19 @@
-from typing import Dict, List
-from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
-from stations.serializers import ClimateDataSerializer
-from stations.models import ClimateData
-from rest_framework.response import Response
-from rest_framework import status
 from datetime import date, datetime, timedelta
 from statistics import median
+from typing import Dict, List
+
+from dj_rql.drf import RQLFilterBackend
+from django.db.models import Avg, Max, Min
+from django.db.models.functions import TruncDate
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
+from stations.filters import ClimateDataFilterClass
+from stations.models import ClimateData
+from stations.serializers import ClimateDataSerializer
+
 
 class ClimateDataViewSet(ModelViewSet):
     serializer_class = ClimateDataSerializer
@@ -66,4 +73,71 @@ class ClimateDataViewSet(ModelViewSet):
  
         return Response(data=response, status=status.HTTP_200_OK)
     
-    
+
+class ClimateDataViewSet2(ModelViewSet):
+    serializer_class = ClimateDataSerializer
+    queryset = ClimateData.objects.all()
+    filter_backends = [RQLFilterBackend]
+    rql_filter_class = ClimateDataFilterClass
+
+    def list(self, request):
+
+        queryset = self.get_queryset()
+
+        climate_data = self.filter_queryset(queryset)
+
+        if not climate_data.exists():
+            return Response(data={'error': 'No data available in the specified range'}, status=status.HTTP_404_NOT_FOUND)
+
+        first_record = climate_data.earliest('datetime')
+
+        last_record = climate_data.latest('datetime')
+
+        # date_difference = last_record.datetime - first_record.datetime
+
+        # if date_difference > timedelta(days=7):
+        #     return Response(data={'error': 'The specified date range is too large'}, status=status.HTTP_400_BAD_REQUEST)
+
+        temperature_stats = climate_data.aggregate(
+            max_degrees = Max('degrees'),
+            min_degrees = Min('degrees'),
+            avg_degrees = Avg('degrees')
+        )
+        rain_stats = climate_data.aggregate(
+            max_rain_amount = Max('rain_amount'),
+            min_rain_amount = Min('rain_amount'),
+            avg_rain_amount = Avg('rain_amount')
+        )
+        pressure_stats = climate_data.aggregate(
+            max_pressure = Max('pressure'),
+            min_pressure = Min('pressure'),
+            avg_pressure = Avg('pressure')
+        )
+
+        daily_avg_temperatures = climate_data.annotate(
+            date=TruncDate('datetime')
+            ).values('date').annotate(avg_temperature=Avg('degrees')
+            ).order_by('date')
+
+        daily_avg_rain_amount = climate_data.annotate(
+            date=TruncDate('datetime')
+            ).values('date').annotate(avg_rain_amount=Avg('rain_amount')
+            ).order_by('date')
+
+        response_data = {
+            'first_datetime': first_record.datetime,
+            'last_datetime': last_record.datetime,
+            'max_temperature': temperature_stats['max_degrees'],
+            'min_temperature': temperature_stats['min_degrees'],
+            'avg_temperature': temperature_stats['avg_degrees'],
+            'max_rain_amount': rain_stats['max_rain_amount'],
+            'min_rain_amount': rain_stats['min_rain_amount'],
+            'avg_rain_amount': rain_stats['avg_rain_amount'],
+            'max_pressure': pressure_stats['max_pressure'],
+            'min_pressure': pressure_stats['min_pressure'],
+            'avg_pressure': pressure_stats['avg_pressure'],
+            'daily_avg_temperatures': list(daily_avg_temperatures),
+            'daily_avg_rain_amount': list(daily_avg_rain_amount),
+        }
+
+        return Response(data=response_data, status=status.HTTP_200_OK)
