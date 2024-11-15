@@ -82,32 +82,26 @@ class ClimateDataViewSet2(ModelViewSet):
 
     def list(self, request):
 
-        queryset = self.get_queryset()
-
-        climate_data = self.filter_queryset(queryset)
+        climate_data = self.filter_queryset(self.queryset)
 
         if not climate_data.exists():
             return Response(data={'error': 'No data available in the specified range'}, status=status.HTTP_404_NOT_FOUND)
 
         first_record = climate_data.earliest('datetime')
-
         last_record = climate_data.latest('datetime')
-
-        # date_difference = last_record.datetime - first_record.datetime
-
-        # if date_difference > timedelta(days=7):
-        #     return Response(data={'error': 'The specified date range is too large'}, status=status.HTTP_400_BAD_REQUEST)
 
         temperature_stats = climate_data.aggregate(
             max_degrees = Max('degrees'),
             min_degrees = Min('degrees'),
             avg_degrees = Avg('degrees')
         )
+
         rain_stats = climate_data.aggregate(
             max_rain_amount = Max('rain_amount'),
             min_rain_amount = Min('rain_amount'),
             avg_rain_amount = Avg('rain_amount')
         )
+
         pressure_stats = climate_data.aggregate(
             max_pressure = Max('pressure'),
             min_pressure = Min('pressure'),
@@ -116,13 +110,15 @@ class ClimateDataViewSet2(ModelViewSet):
 
         daily_avg_temperatures = climate_data.annotate(
             date=TruncDate('datetime')
-            ).values('date').annotate(avg_temperature=Avg('degrees')
-            ).order_by('date')
+        ).values('date').annotate(
+            avg_temperature=Avg('degrees')
+        ).order_by('date')
 
         daily_avg_rain_amount = climate_data.annotate(
             date=TruncDate('datetime')
-            ).values('date').annotate(avg_rain_amount=Avg('rain_amount')
-            ).order_by('date')
+        ).values('date').annotate(
+            avg_rain_amount=Avg('rain_amount')
+        ).order_by('date')
 
         response_data = {
             'first_datetime': first_record.datetime,
@@ -141,3 +137,6 @@ class ClimateDataViewSet2(ModelViewSet):
         }
 
         return Response(data=response_data, status=status.HTTP_200_OK)
+    
+    def create(self, request):
+        return super().create(request, *args, **kwargs)
