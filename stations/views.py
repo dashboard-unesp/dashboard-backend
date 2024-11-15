@@ -14,67 +14,11 @@ from stations.filters import ClimateDataFilterClass
 from stations.models import ClimateData
 from stations.serializers import ClimateDataSerializer
 
+from django.db import transaction
+from django.http import JsonResponse
+
 
 class ClimateDataViewSet(ModelViewSet):
-    serializer_class = ClimateDataSerializer
-    queryset = ClimateData.objects.all()
-
-    def list(self, request):
-        params = request.query_params
-
-        date_from = params.get('date_from', f'{datetime.now()}'.split(' ')[0])
-        date_to = params.get('date_to', f'{datetime.now() - timedelta(7)}'.split(' ')[0])
-
-        queryset = ClimateData.objects.filter(datetime__range=[date_from, date_to])
-        serializer = ClimateDataSerializer(data=queryset, many=True)
-        
-        if serializer.is_valid():
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
-        
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-    
-    @staticmethod
-    def calc_from_daily_data(data: List[ClimateData]) -> Dict[str, float]:
-        degrees = []
-
-        for obj in data:
-            degrees.append(obj.degrees)
-        response = ClimateDataViewSet.calc_min_and_max_temp_from_daily_data(degrees)
-        
-        response['median'] = median(degrees)
-        response['datetime'] = data[0].datetime
-        
-        return response
-
-    @staticmethod
-    def calc_min_and_max_temp_from_daily_data(daily_degrees: List[float]) -> Dict[str, float]:
-        return dict(minTemp=min(daily_degrees), maxTemp=max(daily_degrees))
-
-
-    @action(methods=['GET'], detail=False, url_path='barchart')
-    def get_barchart(self, request) -> List[Dict]:
-
-        params = request.query_params
-        date_from = params.get('date_from', f'{datetime.now()}'.split(' ')[0])
-        date_to = params.get('date_to', f'{datetime.now() - timedelta(7)}'.split(' ')[0])
-        queryset = ClimateData.objects.filter(datetime__range=[date_from, date_to])
-    
-        grouped_data = {}
-        for item in queryset:
-            day = item.datetime.day
-            if day not in grouped_data:
-                grouped_data[day] = []
-            grouped_data[day].append(item)
-
-        response = []
-        for group, data in grouped_data.items():
-            daily_data = self.calc_from_daily_data(data)
-            response.append(daily_data)
- 
-        return Response(data=response, status=status.HTTP_200_OK)
-    
-
-class ClimateDataViewSet2(ModelViewSet):
     serializer_class = ClimateDataSerializer
     queryset = ClimateData.objects.all()
     filter_backends = [RQLFilterBackend]
@@ -138,5 +82,48 @@ class ClimateDataViewSet2(ModelViewSet):
 
         return Response(data=response_data, status=status.HTTP_200_OK)
     
-    def create(self, request):
-        return super().create(request, *args, **kwargs)
+    @action(methods=['POST'], url_path='send', detail=False)
+    def post_new_data(self, request):
+        file = request.FILES['file']
+        climate_data_list=[]
+
+        with file.open('rb') as arquivo:
+            lines = arquivo.readlines()[4:]
+            for line in lines:
+                line = str(line).replace("b'", "").replace("\\r\\n'", "")
+                value = line.split(",")
+                data_hora = value[0]
+                data_hora_sem_aspas = data_hora.replace('"', '')
+                formatted_date = datetime.strptime(data_hora_sem_aspas, '%Y-%m-%d %H:%M:%S')
+                register_id = float(value[1])
+                VelVent_ms = float(value[2])
+                DirVent = float(value[3])
+                RadW = float(value[4])
+                RadFlukJ_Tot = float(value[5])
+                Temp = float(value[6])
+                new_ur = float(value[7])
+                Press_mbar = float(value[8])
+                Chuva_mm_Tot = float(value[9])
+                
+                climate_data = ClimateData(
+                    datetime=formatted_date,
+                    record=register_id,
+                    wind_speed=VelVent_ms,
+                    wind_direction=DirVent,
+                    RadW=RadW,
+                    RadFlukJ=RadFlukJ_Tot,
+                    degrees=Temp,
+                    ur=new_ur,
+                    pressure=Press_mbar,
+                    rain_amount=Chuva_mm_Tot,
+                )
+                climate_data_list.append(climate_data)
+        try:
+            with transaction.atomic():
+                ClimateData.objects.bulk_create(climate_data_list)
+                climate_data_list.clear()         
+            return JsonResponse({"message": "Production Orders Created"},safe=False)
+        except:
+            return Response(data={"message": "Something went wrong"}, status=status.HTTP_400_BAD_REQUEST)
+
+        
