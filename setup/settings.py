@@ -109,10 +109,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'pi_univesp',
-        'USER': os.environ.get('DB_USERNAME'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'USER': 'root',
+        'PASSWORD': 'wHUk3uwtpvmPY0dXSNKeHDys60aSniz1',
+        'HOST': 'dpg-css9amq3esus739jlkk0-a.virginia-postgres.render.com',
+        'PORT': '5432',
     }
 }
 
