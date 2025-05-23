@@ -1,0 +1,62 @@
+// ID da pasta que você deseja monitorar
+const FOLDER_ID = '1Zmq0OwyLgsBGwl9Z6UHQll9TuVk_EAeV';
+const WEBHOOK_URL = 'https://dashboard-backend-juku.onrender.com/sync-files';
+
+// Função para verificar novos arquivos na pasta
+function checkNewFiles() {
+  try {
+    const folder = DriveApp.getFolderById(FOLDER_ID);
+    const files = folder.getFiles();
+
+    // Verifica se há arquivos na pasta
+    while (files.hasNext()) {
+      const file = files.next();
+
+      // Verifica se o arquivo já foi processado (usando a propriedade de usuário "description")
+      console.log("arquivo", file.getName())
+      console.log("processado? ", file.getDescription())
+      if (file.getDescription() !== 'processed') {
+        sendToWebhook(file);
+
+        // Marca o arquivo como processado
+        file.setDescription('processed');
+      }
+    }
+  } catch (error) {
+    Logger.log("Erro ao acessar a pasta ou arquivos: " + error.message);
+  }
+}
+
+
+function sendToWebhook(file) {
+  try {
+    const fileName = file.getName();
+    const fileBlob = file.getBlob();
+
+    const boundary = "----WebKitFormBoundary" + Math.random().toString(16);
+    const contentType = `multipart/form-data; boundary=${boundary}`;
+
+    // Cria o payload no formato multipart/form-data
+    const payload =
+      `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="${fileName}"\r\n` +
+      `Content-Type: ${fileBlob.getContentType()}\r\n\r\n` +
+      fileBlob.getBytes().reduce((str, byte) => str + String.fromCharCode(byte), "") + "\r\n" +
+      `--${boundary}--`;
+
+    const options = {
+      method: 'post',
+      headers: {
+//        'Authorization': `Basic cGxlbm55OmZpcnN0`,
+        'Content-Type': contentType,
+      },
+      payload: payload,
+      muteHttpExceptions: true
+    };
+
+    const response = UrlFetchApp.fetch(WEBHOOK_URL, options);
+    Logger.log("Resposta do webhook: " + response.getContentText());
+  } catch (error) {
+    Logger.log("Erro ao enviar o arquivo para o webhook: " + error.message);
+  }
+}
