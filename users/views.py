@@ -1,4 +1,3 @@
-from tokenize import Token
 
 from django.http import HttpResponse
 
@@ -12,7 +11,9 @@ from rest_framework.permissions import AllowAny
 from users.models import User
 from users.serializers import UserSerializer
 
+
 class UserViewSet(ModelViewSet):
+    '''a'''
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -40,14 +41,12 @@ class UserViewSet(ModelViewSet):
         if user.check_password(str(password)):
             token, created = Token.objects.get_or_create(user=user)
             return Response({'token': token.key}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
      
     
     @action(methods=['POST'], detail=False, url_path='register',  permission_classes=[AllowAny])
     def register(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
